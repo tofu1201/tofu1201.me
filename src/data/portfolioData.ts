@@ -3,7 +3,7 @@ import { Milestone, BlogPost, ProjectItem, ProposalItem } from '../types';
 export const PROFILE_INFO = {
   name: "Tofu",
   domain: "tofu1201.me",
-  email: "contact@tofu1201.me",
+  email: "tofu@tofu1201.tw",
   github: "https://github.com/tofu1201",
   instagram: "https://instagram.com/tofu1201_tw",
   repoUrl: "https://github.com/tofu1201/tofu1201.me",

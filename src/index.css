@@ -1,0 +1,128 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #2C2824;
+    color: #23201D;
+    background-image: 
+      radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+    font-family: 'Josefin Sans', sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Marcellus', serif;
+    letter-spacing: 0.05em;
+    color: #23201D;
+  }
+}
+
+/* Realistic 3D Page Flip Animation */
+@keyframes pageTurnBook {
+  0% {
+    opacity: 0;
+    transform: perspective(1600px) rotateY(-18deg) scale(0.96) translateX(-25px);
+    transform-origin: left center;
+    box-shadow: -15px 0 25px rgba(0, 0, 0, 0.25);
+  }
+  60% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(1600px) rotateY(0deg) scale(1) translateX(0);
+    transform-origin: left center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  }
+}
+
+.page-turn-animation {
+  animation: pageTurnBook 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Washi Tape Strip for Sticky Notes */
+.real-tape {
+  position: relative;
+}
+
+.real-tape::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-1deg);
+  width: 90px;
+  height: 22px;
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  border-left: 2px dashed rgba(180, 170, 150, 0.5);
+  border-right: 2px dashed rgba(180, 170, 150, 0.5);
+  pointer-events: none;
+  z-index: 20;
+}
+
+/* Physical Notebook Page Container */
+.notebook-page-container {
+  background-color: #FAF7F0;
+  background-image: linear-gradient(#FAF7F0 95%, #E6E1D5 95%);
+  background-size: 100% 28px;
+  border-radius: 4px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25), 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #D8D2C4;
+  position: relative;
+}
+
+/* Notebook Binder Left Rings */
+.spiral-binder {
+  position: absolute;
+  left: -18px;
+  top: 40px;
+  bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 30;
+  pointer-events: none;
+}
+
+.binder-ring {
+  width: 32px;
+  height: 12px;
+  background: linear-gradient(180deg, #D4D0C5 0%, #8C877D 50%, #4A463F 100%);
+  border-radius: 6px;
+  box-shadow: 2px 3px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* Sticky Note Styling */
+.sticky-note {
+  border-radius: 2px;
+  box-shadow: 3px 6px 14px rgba(44, 40, 36, 0.12);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.sticky-note:hover {
+  transform: translateY(-4px) rotate(0.5deg);
+  box-shadow: 6px 14px 24px rgba(44, 40, 36, 0.18);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FAF7F0;
+  border-left: 1px solid #D8D2C4;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #8C877D;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4A463F;
+}

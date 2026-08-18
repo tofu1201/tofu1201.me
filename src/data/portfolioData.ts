@@ -4,8 +4,9 @@ export const PROFILE_INFO = {
   name: "Tofu",
   domain: "tofu1201.me",
   email: "contact@tofu1201.me",
-  github: "https://github.com",
-  instagram: "https://instagram.com",
+  github: "https://github.com/tofu1201",
+  instagram: "https://instagram.com/tofu1201_tw",
+  repoUrl: "https://github.com/tofu1201/tofu1201.me",
   location: "新竹縣, 台灣",
   tagline: "在會考學業、程式碼與兒少權益倡議之間，劃出屬於國中世代的痕跡。",
   bio: "我是 Tofu，一名國中學生（116會考生）、新竹縣兒少代表（115/08/10 正式上任）以及程式設計者。我掌握 Python、HTML 與 CSS，熱愛透過程式打造網頁與小工具。",
@@ -77,18 +78,18 @@ export const PROJECTS: ProjectItem[] = [
     id: "p1",
     roman: "I",
     title: "tofu1201.me 個人品牌網站",
-    subtitle: "Art Deco Design System & Portfolio Website",
+    subtitle: "Physical Notebook & Sticky Note Portfolio Website",
     category: "dev",
     categoryLabel: "程式作品",
-    description: "運用 HTML, CSS 與現代前端技術打造的個人品牌網站。採用 1920 蓋茨比 Art Deco 視覺風格。",
-    tags: ["HTML", "CSS", "React", "TypeScript", "Art Deco"],
+    description: "運用 HTML, CSS 與現代前端技術打造的個人品牌網站。採用實體線圈手帳與 Post-it 便利貼視覺風格。",
+    tags: ["HTML", "CSS", "React", "TypeScript", "Tailwind CSS"],
     highlights: [
-      "Art Deco 幾何邊框與金屬光芒視覺語言",
+      "實體線圈手帳與莫蘭迪便利貼視覺語言",
       "全站 SEO 最佳化與 JSON-LD 結構化資料",
       "響應式手持裝置瀏覽體驗"
     ],
     demoUrl: "https://tofu1201.me",
-    githubUrl: "https://github.com"
+    githubUrl: "https://github.com/tofu1201/tofu1201.me"
   },
   {
     id: "p2",

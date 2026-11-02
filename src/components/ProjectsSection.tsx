@@ -1,8 +1,119 @@
-import React from 'react';
-import { PROJECTS } from '../data/portfolioData';
-import { ExternalLink, Github, Check } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { PROFILE_INFO, PROJECTS } from '../data/portfolioData';
+import { ProjectItem } from '../types';
+import { ExternalLink, Github, Check, Loader2, RefreshCw } from 'lucide-react';
+
+interface GitHubRepository {
+  id: number;
+  name: string;
+  html_url: string;
+  homepage: string | null;
+  description: string | null;
+  language: string | null;
+  topics?: string[];
+  stargazers_count: number;
+  forks_count: number;
+  updated_at: string;
+  archived: boolean;
+}
+
+const toRoman = (value: number): string => {
+  const numerals: Array<[number, string]> = [
+    [10, 'X'],
+    [9, 'IX'],
+    [5, 'V'],
+    [4, 'IV'],
+    [1, 'I'],
+  ];
+  let remaining = value;
+  let result = '';
+
+  numerals.forEach(([number, numeral]) => {
+    while (remaining >= number) {
+      result += numeral;
+      remaining -= number;
+    }
+  });
+
+  return result;
+};
+
+const formatUpdatedDate = (date: string): string => {
+  return new Intl.DateTimeFormat('zh-TW', {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+  }).format(new Date(date));
+};
+
+const mapRepositoryToProject = (repository: GitHubRepository, index: number): ProjectItem => {
+  const tags = [repository.language, ...(repository.topics ?? [])].filter(
+    (tag): tag is string => Boolean(tag),
+  );
+
+  return {
+    id: `github-${repository.id}`,
+    roman: toRoman(index + 1),
+    title: repository.name,
+    subtitle: `${repository.language ?? 'GitHub Repository'} • GitHub 專案`,
+    category: 'dev',
+    categoryLabel: repository.archived ? '已封存專案' : 'GitHub 專案',
+    description: repository.description ?? '這是 Tofu 在 GitHub 上公開的程式作品。',
+    tags: tags.length > 0 ? tags : ['GitHub'],
+    highlights: [
+      `最後更新：${formatUpdatedDate(repository.updated_at)}`,
+      `⭐ ${repository.stargazers_count} 顆星 · 🍴 ${repository.forks_count} 次分支`,
+    ],
+    demoUrl: repository.homepage || undefined,
+    githubUrl: repository.html_url,
+  };
+};
 
 export const ProjectsSection: React.FC = () => {
+  const [projects, setProjects] = useState<ProjectItem[]>(PROJECTS);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  const loadGitHubProjects = async (signal?: AbortSignal) => {
+    setIsLoading(true);
+    setLoadError(null);
+
+    try {
+      const response = await fetch(
+        'https://api.github.com/users/tofu1201/repos?sort=updated&direction=desc&per_page=100',
+        {
+          headers: {
+            Accept: 'application/vnd.github+json',
+          },
+          signal,
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(`GitHub API request failed: ${response.status}`);
+      }
+
+      const repositories = (await response.json()) as GitHubRepository[];
+      setProjects(repositories.map(mapRepositoryToProject));
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        return;
+      }
+
+      setLoadError('目前無法連線到 GitHub，先顯示網站內建作品。');
+      setProjects(PROJECTS);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const controller = new AbortController();
+    void loadGitHubProjects(controller.signal);
+
+    return () => controller.abort();
+  }, []);
+
   return (
     <section id="projects" className="py-12 px-4 sm:px-6 min-h-[70vh]">
       <div className="max-w-6xl mx-auto">
@@ -17,13 +128,37 @@ export const ProjectsSection: React.FC = () => {
             程式作品與專案
           </h2>
           <p className="mt-3 text-[#23201D]/80 font-body font-bold max-w-2xl mx-auto text-base">
-            記錄運用 Python 腳本、HTML5 與 CSS3 所進行的自主學習作品。
+            自動同步 <span className="underline">{PROFILE_INFO.github.replace('https://github.com/', '@')}</span> 的公開 GitHub 專案。
           </p>
+
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-3 text-xs font-body font-black">
+            {isLoading && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#23201D]">
+                <Loader2 className="w-3.5 h-3.5 animate-spin" /> 正在同步 GitHub…
+              </span>
+            )}
+
+            {!isLoading && loadError && (
+              <span className="px-3 py-1.5 bg-[#FFEDD5] border border-[#23201D]">
+                {loadError}
+              </span>
+            )}
+
+            {!isLoading && (
+              <button
+                type="button"
+                onClick={() => void loadGitHubProjects()}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#23201D] hover:bg-[#FEF08A]"
+              >
+                <RefreshCw className="w-3.5 h-3.5" /> 重新同步
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Project Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {PROJECTS.map((project, idx) => (
+          {projects.map((project, idx) => (
             <div
               key={project.id}
               className={`sticky-note p-8 flex flex-col justify-between group rounded-sm border-2 border-[#23201D] ${
